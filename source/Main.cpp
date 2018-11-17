@@ -10,17 +10,17 @@ int main(int argc, char** argv) {
 	them in register 0, and then prints the value
 	to the console.
 	
-	cpu.setMemory8(0x0, 0x1); //Instruction 1
-	cpu.setMemory8(0x1, 0x0); //Argument 1: register 0 (target register)
-	cpu.setMemory8(0x2, 0x5); //Argument 2: value of 5
-	cpu.setMemory8(0x4, 0x1); //Instruction 1
-	cpu.setMemory8(0x5, 0x1); //Argument 1: register 1 (target register)
-	cpu.setMemory8(0x6, 0x9); //Argument 2: value of 9
-	cpu.setMemory8(0x8, 0x6); //Instruction 6
-	cpu.setMemory8(0x9, 0x0); //Argument 1: register 0 (target register)
-	cpu.setMemory8(0xA, 0x0); //Argument 2: register 0 (first register to sum)
-	cpu.setMemory8(0xB, 0x1); //Argument 3: register 1 (second register to sum)
-	cpu.setMemory8(0xC, 0x21); //Instruction 21
+	cpu.setMemory8 (0x0,    0x1); //Instruction 1
+	cpu.setMemory8 (0x1,    0x0); //Argument 1: register 0 (target register)
+	cpu.setMemory8 (0x2,    0x5); //Argument 2: value of 5
+	cpu.setMemory8 (0x4,    0x1); //Instruction 1
+	cpu.setMemory8 (0x5,    0x1); //Argument 1: register 1 (target register)
+	cpu.setMemory8 (0x6,    0x9); //Argument 2: value of 9
+	cpu.setMemory8 (0x8,    0x6); //Instruction 6
+	cpu.setMemory8 (0x9,    0x0); //Argument 1: register 0 (target register)
+	cpu.setMemory8 (0xA,    0x0); //Argument 2: register 0 (first register to sum)
+	cpu.setMemory8 (0xB,    0x1); //Argument 3: register 1 (second register to sum)
+	cpu.setMemory8 (0xC,   0x21); //Instruction 21
 	cpu.setMemory16(0xD, 0xFFF0); //Argument 1: register 0 (target register in 0xFFF0..0xFFF7 format)
 	*/
 
@@ -29,12 +29,12 @@ int main(int argc, char** argv) {
 	and prints the first character of the input to
 	the console.
 
-	cpu.setMemory8(0x0, 0x22); //Instruction 22
-	cpu.setMemory16(0x1, 0x100); //Argument 1: memory address 0x100 (target memory address)
-	cpu.setMemory8(0x3, 0x2); //Instruction 2
-	cpu.setMemory8(0x4, 0x0); //Argument 1: register 0 (target register)
-	cpu.setMemory16(0x5, 0x100); //Argument 2: memory address 0x100 (target memory address)
-	cpu.setMemory8(0x7, 0x21); //Instruction 21
+	cpu.setMemory8 (0x0,   0x22); //Instruction 22
+	cpu.setMemory16(0x1,  0x100); //Argument 1: memory address 0x100 (target memory address)
+	cpu.setMemory8 (0x3,    0x2); //Instruction 2
+	cpu.setMemory8 (0x4,    0x0); //Argument 1: register 0 (target register)
+	cpu.setMemory16(0x5,  0x100); //Argument 2: memory address 0x100 (target memory address)
+	cpu.setMemory8 (0x7,   0x21); //Instruction 21
 	cpu.setMemory16(0x8, 0xFFF0); //Argument 1: register 0 (target register in 0xFFF0..0xFFF7 format)
 	*/
 
@@ -58,25 +58,25 @@ int main(int argc, char** argv) {
 	   into designated register 0
 	8. Print the contents of the register 0
 
-	cpu.setMemory8 (0x0 , 0x1C); //Push variable 1 to the temp stack (Instruction 0x1C)
-	cpu.setMemory16(0x1 , 10); //Set argument 1: value 10
-	cpu.setMemory8 (0x3 , 0x1C); //Push variable 2 to the temp stack (Instruction 0x1C)
-	cpu.setMemory16(0x4 , 5); //Set argument 1: value 5
-	cpu.setMemory8 (0x6 , 0x1E); //Call the function (instruction 0x1E)
-	cpu.setMemory8 (0x7 , 0); //Set argument 1: register 0
-	cpu.setMemory16(0x8 , 0xE); //Jump to function memory location (Instruction 0xE)
-	cpu.setMemory8 (0xA , 0x20); //Print int (Instruction 0x20)
+	cpu.setMemory8 (0x0 ,   0x1C); //Push variable 1 to the temp stack (Instruction 0x1C)
+	cpu.setMemory16(0x1 ,     10); //Set argument 1: value 10
+	cpu.setMemory8 (0x3 ,   0x1C); //Push variable 2 to the temp stack (Instruction 0x1C)
+	cpu.setMemory16(0x4 ,      5); //Set argument 1: value 5
+	cpu.setMemory8 (0x6 ,   0x1E); //Call the function (instruction 0x1E)
+	cpu.setMemory8 (0x7 ,      0); //Set argument 1: register 0
+	cpu.setMemory16(0x8 ,    0xE); //Jump to function memory location (Instruction 0xE)
+	cpu.setMemory8 (0xA ,   0x20); //Print int (Instruction 0x20)
 	cpu.setMemory16(0xB , 0xFFF0); //Set argument 1: register 0
-	cpu.setMemory8 (0xD , 0); //Nothing
-	cpu.setMemory8 (0xE , 0x1D); //Pop top of stack and store (Instruction 0x1D)
-	cpu.setMemory8 (0xF , 1); //Set argument 1: register 1
-	cpu.setMemory8 (0x10, 0x1D); //Pop top of stack and store (Instruction 0x1D)
-	cpu.setMemory8 (0x11, 2); //Set argument 1: register 2
-	cpu.setMemory8 (0x12, 0x8); //Multiply (Instruction 0x8)
-	cpu.setMemory8 (0x13, 3); //Set argument 1: register 3
-	cpu.setMemory8 (0x14, 1); //Set argument 2: register 1
-	cpu.setMemory8 (0x15, 2); //Set argument 3: register 2
-	cpu.setMemory8 (0x16, 0x1F); //Return (Instruction 0x1F)
+	cpu.setMemory8 (0xD ,      0); //Nothing
+	cpu.setMemory8 (0xE ,   0x1D); //Pop top of stack and store (Instruction 0x1D)
+	cpu.setMemory8 (0xF ,      1); //Set argument 1: register 1
+	cpu.setMemory8 (0x10,   0x1D); //Pop top of stack and store (Instruction 0x1D)
+	cpu.setMemory8 (0x11,      2); //Set argument 1: register 2
+	cpu.setMemory8 (0x12,    0x8); //Multiply (Instruction 0x8)
+	cpu.setMemory8 (0x13,      3); //Set argument 1: register 3
+	cpu.setMemory8 (0x14,      1); //Set argument 2: register 1
+	cpu.setMemory8 (0x15,      2); //Set argument 3: register 2
+	cpu.setMemory8 (0x16,   0x1F); //Return (Instruction 0x1F)
 	cpu.setMemory16(0x17, 0xFFF3); //Set argument 1: register 3 (register in 0xFFF0.0xFFF7 format)
 	*/
 
