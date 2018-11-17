@@ -1,0 +1,55 @@
+Created by Jovan Mihalović (Joco233) - Started 16. Nov 2018.
+
+The CPU has: 
+-65,520 bytes of ram.
+-8 general purpose integer registers.
+-Stack with capacity of 255 elements. (can be 8 bit or 16 bit elements.)
+-Overflow and halt flags.
+
+-CPU stops operating when the halt flag is true.
+-Registers are accessed by indexes 0..7 unless stated otherwise.
+
+-Instruction set with 32 instructions: (Letters next to reigsters are just used to differentiate them, any register can be used as an argument. A is first argument, B second and C thrid.)
+	 0x0: Sets the halt flag to true
+	--Memory management Instructions----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 0x1: Sets register A to a value 0..65,520 (negatives down to -32,760) or a value contained in register B. (Set value or a value stored in register B accessed by 0xFFF0..0xFFF7)
+	 0x2: Reads 1 byte from a memory address (Set value or a value stored in register B accessed by 0xFFF0..0xFFF7) and stores it in register A.
+	 0x3: Reads 2 bytes from a memory address (Set value or a value stored in register B accessed by 0xFFF0..0xFFF7) (and the next one) and stores it in reigster A.
+	 0x4: Writes first byte from register A to a memory address. (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	 0x5: Writes 2 bytes from register A to a memory address (and the next one). (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	--Arithmetic Instructions-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 0x6: Adds values inside reigster B and C and stores the result into register A. (Can trigger the overflow flag.)
+	 0x7: Subtracts values inside register B and C and stores the result into register A.
+	 0x8: Multiplies value in register B by the value in register C and stores the result into register A. (Can trigger the overflow flag.)
+	 0x9: Divides value in register B by the value in register C (integer division) and stores the result into register A.
+	 0xA: Performs mod operation on value in register B with the value in register C and stores the result into register A.
+	 0xB: Increments the value in register A. (Can trigger the overflow flag.)
+	 0xC: Decrements the value in register A.
+	 0xD: Clears the value in register A.
+	--Bitwise Instructions--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 0xE: Performs bitwise and on the value in register B with the value in register C and stores the result into register A.
+	 0xF: Performs bitwise or on the value in register B with the value in register C and stores the result into register A.
+	0x10: Performs bitwise not on the value in register B and stores the result into register A.
+	0x11: Performs bitwise shift right on the value in register B by the value (amount) in register C and stores the result into register A.
+	0x12: Performs bitwise shift left on the value in register B by the value (amount) in register C and stores the result into register A.
+	--Logical Instructions--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	0x13: Compares if the values in registers B & C are the same and stores the result into register A.
+	0x14: Compares if the values in registers B & C are different and stores the result into register A.
+	0x15: Compares if the value in register B is greater than the value in register C and stores the result into register A. (Signed instruction)
+	0x16: Compares if the value in register B is greater than the value in register C and stores the result into register A. (Unsigned instruction)
+	--Flow Conrol Instructions----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	0x17: Jumps to the memory address. (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	0x18: Jumps to the memory address (Set value or a value stored in register B) if the value in register A is 0. (Registers accessed by 0xFFF0..0xFFF7)
+	0x19: Jumps to the memory address (Set value or a value stored in register B) if the value in register A is 1. (Registers accessed by 0xFFF0..0xFFF7)
+	0x1A: Jumps to the memory address (Set value or a value stored in register A) if the overflow flag is on. (Resets the overflow flag if on.) (Registers accessed by 0xFFF0..0xFFF7)
+	0x1B: Resets the overflow flag to off.
+	--Stack Operation Instructions------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	0x1C: Pushes a value (Set value or a value stored in register A) to the stack. (Will halt if stack is already full and print the error location.) (Registers accessed by 0xFFF0..0xFFF7)
+	0x1D: Pops the top of the stack and stores the value in register A. (Will halt if the stack is already empty and print the error location.)
+	0x1E: Pushes the next instruction memory location to stack and jumps to a memory address. (Set value or a value stored in register A.) (Will halt if stack is already full and print the error location.) (Registers accessed by 0xFFF0..0xFFF7)
+	0x1F: Pops the top of the stack and jumps to that memory address. (Will halt if stack is already empty and print the error location.)
+	--I/O Instructions------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	0x20: Prints a value (Set value or a value stored in register A) as an int to the console. (Registers accessed by 0xFFF0..0xFFF7)
+	0x21: Prints a value (Set value or a value stored in register A) as a character to the console. (Registers accessed by 0xFFF0..0xFFF7)
+	0x22: Reads a line from the console and stores it from a memory address onwards. (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	--If the CPU tries to run an unknown instruction, it will halt and print the unknown instruction.
