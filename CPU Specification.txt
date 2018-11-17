@@ -2,7 +2,7 @@ Created by Jovan Mihalović (Joco233) - Started 16. Nov 2018.
 
 The CPU has: 
 -65,520 bytes of ram.
--8 general purpose integer registers.
+-8x 16 bit general purpose integer registers.
 -Stack with capacity of 255 elements. (can be 8 bit or 16 bit elements.)
 -Overflow and halt flags.
 
