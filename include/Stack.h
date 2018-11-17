@@ -19,6 +19,9 @@ namespace jci {
 			maxSize = newMaxLength;
 		}
 
+		//Get the current length of the stack
+		int getLength() {return length;}
+
 		//Push new element to top of the stack
 		//Param element -> element to be pushed
 		//Returns true if successful or false in case of failure (max length of the stack reached)

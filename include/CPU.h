@@ -19,6 +19,7 @@ private:
 	u16 programCounter;
 
 	jci::Stack<u16> stack;
+	std::vector<u16> tempStack;
 	std::vector<u16> registers;
 	std::vector<u8> memory;
 

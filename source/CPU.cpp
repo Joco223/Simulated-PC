@@ -183,14 +183,9 @@ void CPU::execute() {
 			break;
 
 		//Stack operation instructions---------------------------------------------------------------------------------------------------------------
-		case 0x1C: //Push contents of A to the stack
-			if(!stack.isFull()) {
-				stack.push(decodeParamOut(addTwoU8(arg1, arg2)));
-				programCounter += 3;
-			}else{
-				std::cerr << "Error, can't push new element to the stack when stack is full. Error memory location: " << programCounter << '\n';
-				halt = true;
-			}
+		case 0x1C: //Push contents of A to the temp stack
+			tempStack.push_back(decodeParamOut(addTwoU8(arg1, arg2)));
+			programCounter += 3;
 			break;
 		case 0x1D: //Pop top of the stack and store it in a register
 			if(!stack.isEmpty()) {
@@ -203,9 +198,12 @@ void CPU::execute() {
 			}
 			break; 
 		case 0x1E: //Push next instruction memory location to the stack and jump to A
-			if(!stack.isFull()) {
-				stack.push(programCounter + 3);
-				programCounter = decodeParamOut(addTwoU8(arg1, arg2));
+			if(stack.getLength() + tempStack.size() + 1 <= 255) {
+				stack.push(arg1);
+				stack.push(programCounter + 4);
+				for(u16 i = 0; i < tempStack.size(); ++i) {stack.push(tempStack[i]);}
+				tempStack.clear();
+				programCounter = decodeParamOut(addTwoU8(arg2, arg3));
 			}else{
 				std::cerr << "Error, can't push new element to the stack when stack is full. Error memory location: " << programCounter << '\n';
 				halt = true;
@@ -214,6 +212,8 @@ void CPU::execute() {
 		case 0x1F: //Pop top of the stack and jump to it
 			if(!stack.isEmpty()) {
 				programCounter = stack.peek();
+				stack.pop();
+				registers[stack.peek()] = decodeParamOut(addTwoU8(arg1, arg2));
 				stack.pop();
 			}else{
 				std::cerr << "Error, can't pop from stack when the stack is empty. Error memory location: " << programCounter << '\n';
