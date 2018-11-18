@@ -14,6 +14,7 @@ class CPU {
 private:
 	bool halt;
 	bool overflow;
+	bool underflow;
 
 	u16 OPcode;
 	u16 programCounter;

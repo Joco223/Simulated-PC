@@ -1,3 +1,6 @@
 *.bat
 *.exe
 *.rar
+*.proto
+*.log
+*.cal

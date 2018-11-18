@@ -1,0 +1,9 @@
+setr RA, 5
+setr RB, 15
+add  RC, RA, RB
+outu RC
+
+;Example program which sets register A to 5 and
+;register B to 15, adds up the values and stores
+;them in register C, and then prints the value
+;to the console.

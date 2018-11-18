@@ -1,0 +1,7 @@
+in 100
+mread8 RA, 100
+outc RA
+
+;Example program which takes in a line of input,
+;stores it into memory, reads it into register A
+;and prints it as a character to the console.

@@ -1,0 +1,6 @@
+Changelog 18. Nov 2018.
+	-Added undeflow flag to the CPU and a jump instruction for it
+	-Added options to print as unsigned or signed integers to console
+	-Added signed variation of the division instruction
+	-Created an assembler for the CPU instruction set, more info on it
+	 and how to use in Assembler/README.md

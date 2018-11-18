@@ -4,6 +4,7 @@ CPU::CPU()
 	:
 	halt(false),
 	overflow(false),
+	underflow(false),
 	OPcode(0),
 	programCounter(0)
 {
@@ -81,6 +82,7 @@ void CPU::execute() {
 			programCounter += 4;
 			break;
 		case 0x7: //Subtraction
+			if(registers[arg2] - registers[arg3] < 0) {underflow = true;}
 			registers[arg1] = registers[arg2] - registers[arg3];
 			programCounter += 4;
 			break;
@@ -89,87 +91,94 @@ void CPU::execute() {
 			registers[arg1] = registers[arg2] * registers[arg3];
 			programCounter += 4;
 			break;
-		case 0x9: //Intiger divison
+		case 0x9: //Intiger divison (Unsigned)
+			if(registers[arg3] == 0) {std::cerr << "Error, can't divide by zero. Error memory location: " << programCounter << '\n'; halt = true; break;}
 			registers[arg1] = registers[arg2] / registers[arg3];
 			programCounter += 4;
 			break;
-		case 0xA: //Modulo
+		case 0xA: //Intiger divison (Signed)
+			if(registers[arg3] == 0) {std::cerr << "Error, can't divide by zero. Error memory location: " << programCounter << '\n'; halt = true; break;}
+			registers[arg1] = static_cast<s16>(registers[arg2]) / static_cast<s16>(registers[arg3]);
+			programCounter += 4;
+			break;
+		case 0xB: //Modulo
 			registers[arg1] = registers[arg2] % registers[arg3];
 			programCounter += 4;
 			break;
-		case 0xB: //Increment the value in a register
+		case 0xC: //Increment the value in a register
 			if(registers[arg1] + 1 > 65535) {overflow = true;}
 			registers[arg1]++;
 			programCounter += 2;
 			break;
-		case 0xC: //Decrement the value in a register
+		case 0xD: //Decrement the value in a register
+			if(registers[arg1] - 1 < 0) {underflow = true;}
 			registers[arg1]--;
 			programCounter += 2;
 			break;
-		case 0xD: //Clear a register
+		case 0xE: //Clear a register
 			registers[arg1] = 0;
 			programCounter += 2;
 			break;
 
 		//Bitwise instructions-----------------------------------------------------------------------------------------------------------------------
-		case 0xE: //Bitwise and
+		case 0xF: //Bitwise and
 			registers[arg1] = registers[arg2] & registers[arg3];
 			programCounter += 4;
 			break;
-		case 0xF: //Bitwise or
+		case 0x10: //Bitwise or
 			registers[arg1] = registers[arg2] | registers[arg3];
 			programCounter += 4;
 			break;
-		case 0x10: //Bitwise not
+		case 0x11: //Bitwise not
 			registers[arg1] = registers[arg2] ^ 1;
 			programCounter += 3;
 			break;
-		case 0x11: //Bitwise shift right
+		case 0x12: //Bitwise shift right
 			registers[arg1] = registers[arg2] >> registers[arg3];
 			programCounter += 4;
 			break;
-		case 0x12: //Bitwise shift left
+		case 0x13: //Bitwise shift left
 			registers[arg1] = registers[arg2] << registers[arg3];
 			programCounter += 4;
 			break;
 
 		//Logical instructions-----------------------------------------------------------------------------------------------------------------------
-		case 0x13: //A == B
+		case 0x14: //A == B
 			registers[arg1] = registers[arg2] == registers[arg3];
 			programCounter += 4;
 			break;
-		case 0x14: //A != B
+		case 0x15: //A != B
 			registers[arg1] = registers[arg2] != registers[arg3];
 			programCounter += 4;
 			break;
-		case 0x15: //Signed A > B
+		case 0x16: //Signed A > B
 			registers[arg1] = static_cast<s16>(registers[arg2]) > static_cast<s16>(registers[arg3]);
 			programCounter += 4;
 			break;
-		case 0x16: //Unsigned A > B
+		case 0x17: //Unsigned A > B
 			registers[arg1] = registers[arg2] > registers[arg3];
 			programCounter += 4;
 			break;
 
 		//Flow control instructions------------------------------------------------------------------------------------------------------------------
-		case 0x17: //Jump
+		case 0x18: //Jump
 			programCounter = decodeParamOut(addTwoU8(arg1, arg2));
 			break;
-		case 0x18: //Jump if the value in a register is equal to 0
+		case 0x19: //Jump if the value in a register is equal to 0
 			if(registers[arg1] == 0) {
 				programCounter = decodeParamOut(addTwoU8(arg2, arg3));
 			}else{
 				programCounter += 4;
 			}
 			break;
-		case 0x19: //Jump if the value in a register is equal to 1
+		case 0x1A: //Jump if the value in a register is equal to 1
 			if(registers[arg1] == 1) {
 				programCounter = decodeParamOut(addTwoU8(arg2, arg3));
 			}else{
 				programCounter += 4;
 			}
 			break;
-		case 0x1A: //Jump if overflow flag is on
+		case 0x1B: //Jump if overflow flag is on
 			if(overflow) {
 				programCounter = decodeParamOut(addTwoU8(arg1, arg2));
 				overflow = false;
@@ -177,21 +186,30 @@ void CPU::execute() {
 				programCounter += 3;
 			}
 			break;
-		case 0x1B: //Reset oveflow flag
+		case 0x1C: //Jump if udnerflowS flag is on
+			if(underflow) {
+				programCounter = decodeParamOut(addTwoU8(arg1, arg2));
+				underflow = false;
+			}else{
+				programCounter += 3;
+			}
+			break;
+		case 0x1D: //Reset the flags
 			overflow = false;
+			underflow = false;
 			programCounter++;
 			break;
 
 		//Stack operation instructions---------------------------------------------------------------------------------------------------------------
-		case 0x1C: //Push contents of A to the temp stack
+		case 0x1E: //Push contents of A to the temp stack
 			tempStack.push_back(decodeParamOut(addTwoU8(arg1, arg2)));
 			programCounter += 3;
 			break;
-		case 0x1D: //Push contents of A to the stack
+		case 0x1F: //Push contents of A to the stack
 			stack.push(decodeParamOut(addTwoU8(arg1, arg2)));
 			programCounter += 3;
 			break;
-		case 0x1E: //Pop top of the stack and store it in a register
+		case 0x20: //Pop top of the stack and store it in a register
 			if(!stack.isEmpty()) {
 				registers[arg1] = stack.peek();
 				stack.pop();
@@ -201,7 +219,7 @@ void CPU::execute() {
 				halt = true;
 			}
 			break; 
-		case 0x1F: //Push next instruction memory location to the stack and jump to A
+		case 0x21: //Push next instruction memory location to the stack and jump to A
 			if(stack.getLength() + tempStack.size() + 1 <= 255) {
 				stack.push(arg1);
 				stack.push(programCounter + 4);
@@ -213,7 +231,7 @@ void CPU::execute() {
 				halt = true;
 			}
 			break;
-		case 0x20: //Pop top of the stack and jump to it
+		case 0x22: //Pop top of the stack and jump to it
 			if(!stack.isEmpty()) {
 				programCounter = stack.peek();
 				stack.pop();	
@@ -226,15 +244,19 @@ void CPU::execute() {
 			break;
 
 		//I/O instructions---------------------------------------------------------------------------------------------------------------------------
-		case 0x21: //Print a single int to the console
+		case 0x23: //Print a single unsigned int to the console
 			std::cerr << decodeParamOut(addTwoU8(arg1, arg2));
 			programCounter += 3;
 			break;
-		case 0x22: //Print a single character to the console
+		case 0x24: //Print a single signed int to the console
+			std::cerr << static_cast<s16>(decodeParamOut(addTwoU8(arg1, arg2)));
+			programCounter += 3;
+			break;
+		case 0x25: //Print a single character to the console
 			std::cerr << (char)decodeParamOut(addTwoU8(arg1, arg2));
 			programCounter += 3;
 			break;
-		case 0x23: { //Takes a line of input and stores it from a memory address onwards
+		case 0x26: { //Takes a line of input and stores it from a memory address onwards
 			std::string tmp = "";
 			std::getline(std::cin, tmp);
 			u16 memoryLocation = decodeParamOut(addTwoU8(arg1, arg2));
@@ -244,7 +266,7 @@ void CPU::execute() {
 
 		//Default error------------------------------------------------------------------------------------------------------------------------------
 		default:
-			std::cerr << "Unknown instruction: " << instruction << '\n';
+			std::cerr << "Unknown instruction: 0x" << std::hex << (int)instruction << '\n';
 			halt = true;
 			break;
 	}
