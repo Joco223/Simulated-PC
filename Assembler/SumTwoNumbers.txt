@@ -1,5 +1,5 @@
-setr RA, 5
-setr RB, 15
+setr RA, 0x5
+setr RB, 0xF
 add  RC, RA, RB
 outu RC
 

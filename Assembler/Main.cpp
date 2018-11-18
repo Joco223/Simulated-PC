@@ -42,6 +42,7 @@ std::unordered_map<std::string, u16> registers16 = {{"RA", 0xFFF0}, {"RB", 0xFFF
 
 bool isDigit(std::string input) {
 	bool isX = false;
+	bool isNonDec = false;
 	for(int i = 0; i < input.length(); ++i) {
 		if(i == 0) {
 			if(input[i] == '0') {
@@ -57,10 +58,13 @@ bool isDigit(std::string input) {
 					return false;
 				}else{
 					isX = false;
+					isNonDec = true;
 				}
 			}else{
-				if(!isdigit(input[i])) {
-					return false;
+				if(!isNonDec) {
+					if(!isdigit(input[i])) {
+						return false;
+					}
 				}
 			}
 		}
@@ -92,8 +96,8 @@ void writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 								byteCode.push_back(registers16[IL.arguments[i]] >> 8);
 							}else{
 								if(isDigit(IL.arguments[i])) {
-									byteCode.push_back(std::stoi(IL.arguments[i]) & 0xFF);
-									byteCode.push_back(std::stoi(IL.arguments[i]) >> 8);
+									byteCode.push_back(std::stoi(IL.arguments[i], nullptr, 0) & 0xFF);
+									byteCode.push_back(std::stoi(IL.arguments[i], nullptr, 0) >> 8);
 								}else{
 									std::cerr << "Error, unknown 16 bit argument: " << IL.arguments[i] << " (Argument position: " << i+1 << ") at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", aborting assembly.\n"; return;
 								}

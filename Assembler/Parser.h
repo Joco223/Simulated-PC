@@ -16,7 +16,7 @@ namespace Parser{
 		std::string line = "";
 		std::vector<std::string> lines;
 		while(std::getline(in, line)) {
-			if(line[0] != ';') {
+			if(line[0] != ';' && line != "") {
 				lines.push_back(line);
 			}
 		}

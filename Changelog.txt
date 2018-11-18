@@ -8,3 +8,5 @@ Changelog 18. Nov 2018.
 	-Added debug mode to the CPU, now you need to put true or false after
 	 as an execution argument, if you put true, it will write to output.log
 	-Added some warning if the CPU doesn't have correct arguments.
+	-Fixed assembler bug where it would crash if there was empty new line and
+	 where it would not recognize hex or binary numbers
