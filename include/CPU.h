@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -15,6 +16,7 @@ private:
 	bool halt;
 	bool overflow;
 	bool underflow;
+	bool debug;
 
 	u16 OPcode;
 	u16 programCounter;
@@ -24,11 +26,13 @@ private:
 	std::vector<u16> registers;
 	std::vector<u8> memory;
 
+	std::vector<std::string> log;
+
 	void execute();
 	u16 decodeParamOut(u16);
 	u16 addTwoU8(u8, u8);
 public:
-	CPU();
+	CPU(bool);
 	bool isHalted();
 	void tick();
 	void setMemory8(u16, u8);

@@ -4,10 +4,21 @@
 
 int main(int argc, char** argv) {
 
-	CPU cpu;
-
 	if(argv[1] != nullptr) {
-		std::ifstream inputFile(argv[1], std::ios::in | std::ios::binary);
+		std::string debugMode = argv[1];
+		if(debugMode != "true" && argv[1] != "false") {
+			std::cerr << "Debug mode not specificed, put true/false after Simulated-PC.exe\n";
+			return 0;
+		}
+	}else{
+		std::cerr << "Debug mode not specificed, put true/false after Simulated-PC.exe\n";
+		return 0;
+	}
+	
+	CPU cpu(argv[1]);
+
+	if(argv[2] != nullptr) {
+		std::ifstream inputFile(argv[2], std::ios::in | std::ios::binary);
 		inputFile.seekg(0, std::ios::end);
 		int length = inputFile.tellg();
 		inputFile.seekg(0, std::ios::beg);
@@ -20,6 +31,8 @@ int main(int argc, char** argv) {
 			cpu.setMemory8(i, buffer[i]);
 		}
 		delete buffer;
+	}else{
+		std::cerr << "You can load an assembled program if you put its name as the second argument.\n";
 	}
 
 	//These two example programs here will be made in assembly soon™

@@ -4,3 +4,7 @@ Changelog 18. Nov 2018.
 	-Added signed variation of the division instruction
 	-Created an assembler for the CPU instruction set, more info on it
 	 and how to use in Assembler/README.md
+	--NEW--
+	-Added debug mode to the CPU, now you need to put true or false after
+	 as an execution argument, if you put true, it will write to output.log
+	-Added some warning if the CPU doesn't have correct arguments.

@@ -1,8 +1,9 @@
 #include "CPU.h"
 
-CPU::CPU() 
+CPU::CPU(bool debug_) 
 	:
 	halt(false),
+	debug(debug_),
 	overflow(false),
 	underflow(false),
 	OPcode(0),
@@ -50,6 +51,13 @@ void CPU::execute() {
 		case 0x0: //Halt
 			std::cerr << "\nThe CPU has been halted.\n";
 			halt = true;
+			if(debug) {
+				std::ofstream logFile("output.log");
+				for(auto& i : log) {
+					logFile << i;
+				}
+				logFile.close();
+			}
 			break;
 
 		//Memory management instructions-------------------------------------------------------------------------------------------------------------
@@ -275,8 +283,24 @@ void CPU::execute() {
 //If the CPU is not halted, load the next instruction and execute it
 void CPU::tick() {
 	if(!halt) {
+
+		if(debug) {
+			std::string tmp = "Program Counter: " + std::to_string(programCounter);
+			tmp = tmp + ", memory at Program Counter: " + std::to_string((u16)memory[programCounter]);
+			tmp = tmp + ", RA: " + std::to_string((u16)registers[0]);
+			tmp = tmp + ", RB: " + std::to_string((u16)registers[1]);
+			tmp = tmp + ", RC: " + std::to_string((u16)registers[2]);
+			tmp = tmp + ", RD: " + std::to_string((u16)registers[3]);
+			tmp = tmp + ", RE: " + std::to_string((u16)registers[4]);
+			tmp = tmp + ", RF: " + std::to_string((u16)registers[5]);
+			tmp = tmp + ", RG: " + std::to_string((u16)registers[6]);
+			tmp = tmp + ", RH: " + std::to_string((u16)registers[7]);
+			tmp = tmp + ", OVERFLOW: " + std::to_string((u16)overflow);
+			tmp = tmp + ", UNDERFLOW: " + std::to_string((u16)underflow) + "\n";
+			log.push_back(tmp);
+		}
+		
 		OPcode = memory[programCounter];
 		execute();
-
 	}
 }

@@ -2,18 +2,20 @@
 
 This is an assembler for the Simulated-PC CPU instruction set.
 
-How to use: Run "Assembler.exe inputFile.txt outputFile"
+How to use: Run "Assembler.exe inputFile.txt outputFile".
 
-Details on instruction arguments and what they do is in CPU Specification.txt
+Details on instruction arguments and what they do is in CPU Specification.txt.
 
 Comments are written by putting ";" at the start of the line, they only work at the start of the line.
 Note, hex and binary numbers do not work for now, I will try and fix that.
+
+To load a program into Simulated-PC, put the assembled file name as the second executable argument.
 
 Instruction syntax is:
 
 instruction arg1, arg2
 
-Arguments are seperated by a comma
+Arguments are seperated by a comma.
 
 List of instructions:
 halt     - Instruction  0x0 - Will halt the CPU, not necesary at the end of the program
