@@ -187,7 +187,11 @@ void CPU::execute() {
 			tempStack.push_back(decodeParamOut(addTwoU8(arg1, arg2)));
 			programCounter += 3;
 			break;
-		case 0x1D: //Pop top of the stack and store it in a register
+		case 0x1D: //Push contents of A to the stack
+			stack.push(decodeParamOut(addTwoU8(arg1, arg2)));
+			programCounter += 3;
+			break;
+		case 0x1E: //Pop top of the stack and store it in a register
 			if(!stack.isEmpty()) {
 				registers[arg1] = stack.peek();
 				stack.pop();
@@ -197,7 +201,7 @@ void CPU::execute() {
 				halt = true;
 			}
 			break; 
-		case 0x1E: //Push next instruction memory location to the stack and jump to A
+		case 0x1F: //Push next instruction memory location to the stack and jump to A
 			if(stack.getLength() + tempStack.size() + 1 <= 255) {
 				stack.push(arg1);
 				stack.push(programCounter + 4);
@@ -209,10 +213,10 @@ void CPU::execute() {
 				halt = true;
 			}
 			break;
-		case 0x1F: //Pop top of the stack and jump to it
+		case 0x20: //Pop top of the stack and jump to it
 			if(!stack.isEmpty()) {
 				programCounter = stack.peek();
-				stack.pop();
+				stack.pop();	
 				registers[stack.peek()] = decodeParamOut(addTwoU8(arg1, arg2));
 				stack.pop();
 			}else{
@@ -222,15 +226,15 @@ void CPU::execute() {
 			break;
 
 		//I/O instructions---------------------------------------------------------------------------------------------------------------------------
-		case 0x20: //Print a single int to the console
+		case 0x21: //Print a single int to the console
 			std::cerr << decodeParamOut(addTwoU8(arg1, arg2));
 			programCounter += 3;
 			break;
-		case 0x21: //Print a single character to the console
+		case 0x22: //Print a single character to the console
 			std::cerr << (char)decodeParamOut(addTwoU8(arg1, arg2));
 			programCounter += 3;
 			break;
-		case 0x22: { //Takes a line of input and stores it from a memory address onwards
+		case 0x23: { //Takes a line of input and stores it from a memory address onwards
 			std::string tmp = "";
 			std::getline(std::cin, tmp);
 			u16 memoryLocation = decodeParamOut(addTwoU8(arg1, arg2));
@@ -251,5 +255,6 @@ void CPU::tick() {
 	if(!halt) {
 		OPcode = memory[programCounter];
 		execute();
+
 	}
 }

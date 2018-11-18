@@ -45,13 +45,14 @@ The CPU has:
 	0x1B: Resets the overflow flag to off.
 	--Stack Operation Instructions------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	0x1C: Pushes a value (Set value or a value stored in register A) to a temporary stack buffer.(Registers accessed by 0xFFF0..0xFFF7)
-	0x1D: Pops the top of the stack and stores the value in register A. (Will halt if the stack is already empty and print the error location.)
-	0x1E: Pushes the return register A (Register 0..7) to the stack then the next instruction memory location to stack and the contents of the stack buffer and clears the stack buffer, 
+	0x1D: Pushes a value (Set value or a value stored in register A) to the stack.(Registers accessed by 0xFFF0..0xFFF7)
+	0x1E: Pops the top of the stack and stores the value in register A. (Will halt if the stack is already empty and print the error location.)
+	0x1F: Pushes the return register A (Register 0..7) to the stack then the next instruction memory location to stack and the contents of the stack buffer and clears the stack buffer, 
 		  then jumps to a memory address. (Set value or a value stored in register B.) (Will halt if stack is already full and print the error location.)  (Register B accessed by 0xFFF0..0xFFF7)
-	0x1F: Pops the top of the stack and jumps to that memory address then stores the return value (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	0x20: Pops the top of the stack and jumps to that memory address then stores the return value (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
 		  into the return register specified by 0x1E instruction. (Will halt if stack is already empty and print the error location.)
 	--I/O Instructions------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	0x20: Prints a value (Set value or a value stored in register A) as an int to the console. (Registers accessed by 0xFFF0..0xFFF7)
-	0x21: Prints a value (Set value or a value stored in register A) as a character to the console. (Registers accessed by 0xFFF0..0xFFF7)
-	0x22: Reads a line from the console and stores it from a memory address onwards. (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
+	0x21: Prints a value (Set value or a value stored in register A) as an int to the console. (Registers accessed by 0xFFF0..0xFFF7)
+	0x22: Prints a value (Set value or a value stored in register A) as a character to the console. (Registers accessed by 0xFFF0..0xFFF7)
+	0x23: Reads a line from the console and stores it from a memory address onwards. (Set value or a value stored in register A) (Registers accessed by 0xFFF0..0xFFF7)
 	--If the CPU tries to run an unknown instruction, it will halt and print the unknown instruction.
