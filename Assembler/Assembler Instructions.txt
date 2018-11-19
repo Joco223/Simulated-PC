@@ -1,3 +1,18 @@
+Comments are written by putting ";" at the start of the comment.
+I will add multiline comments if requested.
+
+Hex and binary numbers are supported, just write them  with 0x or 0b prefix respectively.
+
+Labels are defined as "label labelName" and they point to the instruction after them, so they can be used as arguments
+to where to jump (For example when using call instruction, you can use a label for the second argument)
+
+You can use labels as instruction arguments, but only for 16 bit arguments since they specify memory address.
+
+To load a program into Simulated-PC, put the assembled file name as the second executable argument.
+
+Instruction syntax is:
+
+instruction arg1, arg2
 
 Arguments are seperated by a comma.
 

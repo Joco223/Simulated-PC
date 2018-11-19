@@ -1,5 +1,5 @@
-setr RA, 0x5
-setr RB, 0xF
+setr RA, 0x5 ;Example of a comment next to the instructions
+setr RB, 15; This one works too
 add  RC, RA, RB
 outu RC
 

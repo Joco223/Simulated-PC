@@ -15,6 +15,18 @@ struct instructionTemplate {
 	std::vector<u8> argumentSizes;
 };
 
+struct label {
+	std::string name;
+	u16 position;
+};
+
+struct instructionToModify {
+	Parser::instructionLine IL;
+	u16 position;
+	std::string name;
+	u8 argumentNum;
+};
+
 std::unordered_map<std::string, instructionTemplate> instructionSet = {{{"setr"},     {0x1 , {1, 2   }}}, {{"mread8"},  {0x2 , {1, 2   }}},
 																	   {{"mread16"},  {0x3 , {1, 2   }}}, {{"mwrite8"}, {0x4 , {1, 2   }}},
 																	   {{"mwrite16"}, {0x5 , {1, 2   }}}, {{"add"},     {0x6 , {1, 1, 1}}},
@@ -34,7 +46,7 @@ std::unordered_map<std::string, instructionTemplate> instructionSet = {{{"setr"}
 																	   {{"call"},     {0x21, {1, 2   }}}, {{"ret"},     {0x22, {2      }}},
 																	   {{"outu"},     {0x23, {2      }}}, {{"outs"},    {0x24, {2      }}},
 																	   {{"outc"},     {0x25, {2      }}}, {{"in"},      {0x26, {2      }}},
-																	   {{"halt"},     {0x0 , {       }}}
+																	   {{"halt"},     {0x0 , {       }}}, {{"label"},   {0   , {2      }}}
 																	};
 
 std::unordered_map<std::string, u16> registers8  = {{"RA",      0}, {"RB",      1}, {"RC",      2}, {"RD",      3}, {"RE",      4}, {"RF",      5}, {"RG", 6}, {"RH",      7}};
@@ -42,6 +54,7 @@ std::unordered_map<std::string, u16> registers16 = {{"RA", 0xFFF0}, {"RB", 0xFFF
 
 bool isDigit(std::string input) {
 	bool isX = false;
+	bool hasBeenX = false;
 	bool isNonDec = false;
 	for(int i = 0; i < input.length(); ++i) {
 		if(i == 0) {
@@ -58,6 +71,7 @@ bool isDigit(std::string input) {
 					return false;
 				}else{
 					isX = false;
+					hasBeenX = true;
 					isNonDec = true;
 				}
 			}else{
@@ -65,30 +79,49 @@ bool isDigit(std::string input) {
 					if(!isdigit(input[i])) {
 						return false;
 					}
+				}else{
+					hasBeenX = false;
+					std::string usableCharacters = "0123456789abcdefABCDEF";
+					bool correct = false;
+					for(int j = 0; j < usableCharacters.length(); ++j) {
+						if(input[i] == usableCharacters[j]) {correct = true; break;}
+					}
+					if(!correct) {return false;}
 				}
 			}
 		}
 	}
-	return true;
+	if(hasBeenX){
+		return false;
+	}else{
+		return true;
+	}
 }
 
-void writeInstructions(std::vector<Parser::instructionLine>& instructionLines, const char* fileName) {
+bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, const char* fileName, std::string& finalOutputName) {
 	std::vector<u8> byteCode;
+	std::vector<label> labels;
+	std::vector<instructionToModify> instructionsToModify;
 
+	//Go trough all instructions
 	for(auto& IL: instructionLines) {
+		//Check if instruction exists in the instruction set
 		if(instructionSet.find(IL.instruction) != instructionSet.end()) {
 			instructionTemplate currentInstruction = instructionSet[IL.instruction];
 
-			byteCode.push_back(currentInstruction.instructionCode);
+			if(IL.instruction != "label") {byteCode.push_back(currentInstruction.instructionCode);}
 
+			//Check if instruction has enough arguments
 			if(currentInstruction.argumentSizes.size() > 0) {
+				//Go trough all the arguments
 				for(int i = 0; i < currentInstruction.argumentSizes.size(); i++) {
 					if(i <= IL.arguments.size()-1)  {
 						if(currentInstruction.argumentSizes[i] == 1) {
 							if(registers8.find(IL.arguments[i]) != registers8.end()) {
 								byteCode.push_back(registers8[IL.arguments[i]]);
 							}else{
-								std::cerr << "Error, unknown 8 bit argument: " << IL.arguments[i] << " (Argument position: " << i+1 << ") at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", aborting assembly.\n"; return;
+								std::cerr << "\033[31mError\033[0m, unknown 8 bit argument: " << IL.arguments[i] << "\033[0m (Argument position: " << i+1 << ") at instruction: " << IL.instruction << " at line: " << IL.lineNum << ".\n";
+								std::cerr << "Aborting assembly.\n"; return 0;
 							}
 						}else{
 							if(registers16.find(IL.arguments[i]) != registers16.end()) {
@@ -99,21 +132,41 @@ void writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 									byteCode.push_back(std::stoi(IL.arguments[i], nullptr, 0) & 0xFF);
 									byteCode.push_back(std::stoi(IL.arguments[i], nullptr, 0) >> 8);
 								}else{
-									std::cerr << "Error, unknown 16 bit argument: " << IL.arguments[i] << " (Argument position: " << i+1 << ") at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", aborting assembly.\n"; return;
+									if(IL.instruction == "label") {
+										labels.push_back({IL.arguments[i], byteCode.size()});
+									}else{
+										byteCode.push_back(0x0);
+										byteCode.push_back(0x0);
+										instructionsToModify.push_back({IL, byteCode.size()-2, IL.arguments[i], i});
+									}	
 								}
 							}
 						}
 					}else{
-						std::cerr << "Error, not enough arguments at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", aborting assembly.\n"; return;
+						std::cerr << "\033[31mError\033[0m, not enough arguments at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", " << currentInstruction.argumentSizes.size() << " number of arguments required.\n";
+						std::cerr << "Aborting assembly.\n"; return 0;
 					}
 				}
 			}
 		}else{
-			std::cerr << "Error, unknown instruction: " << IL.instruction << " found at line: " << IL.lineNum << ", aborting assembly.\n"; return;
+			std::cerr << "\033[31mError\033[0m, unknown instruction: " << IL.instruction << " found at line: " << IL.lineNum << ".\n";
+			std::cerr << "Aborting assembly.\n"; return 0;
 		}
 	}
 
-	char* byteCodeData = reinterpret_cast<char*>(byteCode.data());
+	for(int i = 0; i < instructionsToModify.size(); ++i) {
+		int id = -1;
+		for(int j = 0; j < labels.size(); ++j) {
+			if(instructionsToModify[i].name == labels[j].name) {id = j; break;}
+		}
+		if(id == -1) {
+			std::cerr << "\033[31mError\033[0m, unknown argument: \033[35m" << instructionsToModify[i].name << "\033[0m (Argument position: \033[35m" << instructionsToModify[i].argumentNum+1 << "\033[0m) at instruction: \033[35m" << instructionsToModify[i].IL.instruction << "\033[0m, at line: \033[35m" << instructionsToModify[i].IL.lineNum << "\033[0m.\n";
+			std::cerr << "Aborting assembly.\n"; return 0;
+		}else{
+			byteCode[instructionsToModify[i].position    ] = labels[id].position &  0xFF;
+			byteCode[instructionsToModify[i].position + 1] = labels[id].position >> 8;
+		}	
+	}
 	
 	std::string finalFileName = fileName;
 	if(finalFileName.length() < 4) {
@@ -123,16 +176,22 @@ void writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 			finalFileName = finalFileName + ".cal";
 		}
 	}
+	finalOutputName = finalFileName;
 	std::ofstream outputFile(finalFileName, std::ios::out | std::ios::binary);
-	outputFile.write(byteCodeData, byteCode.size());
+	outputFile.write(reinterpret_cast<char*>(byteCode.data()), byteCode.size());
 	outputFile.close();
-	delete byteCodeData;
+	return 1;
 }
 
 int main(int argc, char** argv) {
-	if(argc == 2) {std::cerr << "Error, no input file name/no output file name.\n"; return 0;}
+	if(argc == 1) {std::cerr << "\033[31mError\033[0m, no input file name and no output file name.\n"; return 0;}
+	if(argc == 2) {std::cerr << "\033[31mError\033[0m, no input file name/no output file name.\n"; return 0;}
 
 	std::vector<std::string> lines = Parser::parseFile(argv[1]);
 	std::vector<Parser::instructionLine> instructionLines = Parser::parseLines(lines);
-	writeInstructions(instructionLines, argv[2]);
+	std::string output;
+	int end = writeInstructions(instructionLines, argv[2], output);
+	if(end) {
+		std::cerr << "\033[32mAssembly succesful!\033[0m Output file is: \033[35m" + output << "\033[0m";
+	}
 }

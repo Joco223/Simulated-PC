@@ -32,7 +32,16 @@ namespace Parser{
 			i++;
 		}
 		std::string argumentsS = line.substr(i);
-		std::stringstream ss(argumentsS);
+		std::string newString = "";
+
+		unsigned hasComment = argumentsS.find(';');
+		if(hasComment == std::string::npos) {
+			newString = argumentsS;
+		}else{
+			newString = argumentsS.substr(1, hasComment);
+		}
+
+		std::stringstream ss(newString);
 		while(ss.good()) {
 			std::string substring;
 			std::getline(ss, substring, ',');
