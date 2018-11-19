@@ -1,0 +1,28 @@
+pusht 10
+pusht  5
+call RA, sum
+outu RA
+halt ;This is here to create 1 byte seperation between the start and the function
+label sum
+pops RB
+pops RA
+mlt RC, RA, RB
+ret RC
+
+;Example program which calls a function with 2 arguments,
+;the function mutliplies the arguments and returns the product
+;to the designated return register and then print it.
+
+;Flow of the program:
+;1. Push argument 1 to the temp stack
+;2. Push argument 2 to the temp stack
+;3. (Call instruction) Push the return register index to the stack then next ;instruction memory address to stack
+;   and then the previous 2 arguments to the stack (It looks like this: Top is argument 2 -> argument 1 -> next instruction memory location -> return register),
+;   then jump to the function memory location
+;---(Now in the function)
+;4. Pop the top of the stack (argument 2) and store it into register 1
+;5. Pop the top of the stack (argument 1) and store it into register 2
+;6. Multiply contents of register 1 by contents of register 2 and store into register 3
+;7. Jump to the instruction after the call instruction and store contents of register 3
+;   into designated register 0
+;8. Print the contents of the register 0

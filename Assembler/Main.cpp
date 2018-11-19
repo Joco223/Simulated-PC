@@ -133,11 +133,11 @@ bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 									byteCode.push_back(std::stoi(IL.arguments[i], nullptr, 0) >> 8);
 								}else{
 									if(IL.instruction == "label") {
-										labels.push_back({IL.arguments[i], byteCode.size()});
+										labels.push_back({IL.arguments[i], static_cast<u16>(byteCode.size())});
 									}else{
 										byteCode.push_back(0x0);
 										byteCode.push_back(0x0);
-										instructionsToModify.push_back({IL, byteCode.size()-2, IL.arguments[i], i});
+										instructionsToModify.push_back({IL, static_cast<u16>(byteCode.size() - 2), IL.arguments[i], static_cast<u8>(i)});
 									}	
 								}
 							}

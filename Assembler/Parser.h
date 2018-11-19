@@ -55,7 +55,12 @@ namespace Parser{
 		std::vector<instructionLine> instructionLines;
 		int i = 1;
 		for(auto& line : lines) {
-			instructionLine currentInstruction = parseLine(line, i);
+			instructionLine currentInstruction;
+			if(line != "halt" && line != "rst") {
+				currentInstruction = parseLine(line, i);
+			}else{
+				currentInstruction = {"halt", {}, i};
+			}	
 			instructionLines.push_back(currentInstruction);
 			i++;
 		}

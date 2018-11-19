@@ -1,0 +1,28 @@
+pusht 5
+call RA, factorial
+outu RA
+halt ;This is here to create 1 byte seperation between the start and the function
+label factorial
+pops RB
+setr RC, 1
+lrgu RD, RB, RC
+jmrz RD, notBigger
+setr RC, RB
+dec RC
+pushs RB
+pusht RC
+call RC, factorial
+pops RB
+mlt RD, RB, RC
+ret RD
+label notBigger
+ret 1
+
+;Example program which recursievly calls a factorial function.
+;First it pushes first argument to the stack, then calls the function, 
+;function proceeds to check n (argument) > 1, if true, it pushes n to stack imidiately, 
+;calls itself, with the argument n-1, if false, it returns 1. When it returns the first time,
+;it pops the top of the stack and stores it into register 1 and stores the previous n in it
+;(Because it was overwritten by the sub function which was previously called), multiplies it
+;with the return value of the previous function and returns that. After all of that, it returns
+;to the original call and prints the value to the console.
