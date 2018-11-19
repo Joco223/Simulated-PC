@@ -120,8 +120,8 @@ bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 							if(registers8.find(IL.arguments[i]) != registers8.end()) {
 								byteCode.push_back(registers8[IL.arguments[i]]);
 							}else{
-								std::cerr << "\033[31mError\033[0m, unknown 8 bit argument: " << IL.arguments[i] << "\033[0m (Argument position: " << i+1 << ") at instruction: " << IL.instruction << " at line: " << IL.lineNum << ".\n";
-								std::cerr << "Aborting assembly.\n"; return 0;
+								std::cerr << "\033[31mError\033[0m, unknown 8 bit argument: \033[35m" << IL.arguments[i] << "\033[0m (Argument position: \033[35m" << i+1 << "\033[0m) at instruction: \033[35m" << IL.instruction << "\033[0m at line: \033[35m" << IL.lineNum << "\033[0m.\n";
+								std::cerr << "Aborting assembly."; return 0;
 							}
 						}else{
 							if(registers16.find(IL.arguments[i]) != registers16.end()) {
@@ -143,14 +143,14 @@ bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 							}
 						}
 					}else{
-						std::cerr << "\033[31mError\033[0m, not enough arguments at instruction: " << IL.instruction << " at line: " << IL.lineNum << ", " << currentInstruction.argumentSizes.size() << " number of arguments required.\n";
-						std::cerr << "Aborting assembly.\n"; return 0;
+						std::cerr << "\033[31mError\033[0m, not enough arguments at instruction: \033[35m" << IL.instruction << "\033[0m at line: \033[35m" << IL.lineNum << "\033[0m, \033[35m" << currentInstruction.argumentSizes.size() << "\033[0m number of arguments required.\n";
+						std::cerr << "Aborting assembly."; return 0;
 					}
 				}
 			}
 		}else{
-			std::cerr << "\033[31mError\033[0m, unknown instruction: " << IL.instruction << " found at line: " << IL.lineNum << ".\n";
-			std::cerr << "Aborting assembly.\n"; return 0;
+			std::cerr << "\033[31mError\033[0m, unknown instruction: \033[35m" << IL.instruction << "\033[0m found at line: \033[35m" << IL.lineNum << "\033[0m.\n";
+			std::cerr << "Aborting assembly."; return 0;
 		}
 	}
 
@@ -161,7 +161,7 @@ bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 		}
 		if(id == -1) {
 			std::cerr << "\033[31mError\033[0m, unknown argument: \033[35m" << instructionsToModify[i].name << "\033[0m (Argument position: \033[35m" << instructionsToModify[i].argumentNum+1 << "\033[0m) at instruction: \033[35m" << instructionsToModify[i].IL.instruction << "\033[0m, at line: \033[35m" << instructionsToModify[i].IL.lineNum << "\033[0m.\n";
-			std::cerr << "Aborting assembly.\n"; return 0;
+			std::cerr << "Aborting assembly."; return 0;
 		}else{
 			byteCode[instructionsToModify[i].position    ] = labels[id].position &  0xFF;
 			byteCode[instructionsToModify[i].position + 1] = labels[id].position >> 8;
@@ -184,8 +184,8 @@ bool writeInstructions(std::vector<Parser::instructionLine>& instructionLines, c
 }
 
 int main(int argc, char** argv) {
-	if(argc == 1) {std::cerr << "\033[31mError\033[0m, no input file name and no output file name.\n"; return 0;}
-	if(argc == 2) {std::cerr << "\033[31mError\033[0m, no input file name/no output file name.\n"; return 0;}
+	if(argc == 1) {std::cerr << "\033[31mError\033[0m, no input file name and no output file name."; return 0;}
+	if(argc == 2) {std::cerr << "\033[31mError\033[0m, no input file name/no output file name."; return 0;}
 
 	std::vector<std::string> lines = Parser::parseFile(argv[1]);
 	std::vector<Parser::instructionLine> instructionLines = Parser::parseLines(lines);
