@@ -1,3 +1,18 @@
+Changelog 22. Nov 2018.
+	-Fixed some Assembler parser bugs
+	-Made a debugger program which takes a normal Simulated-PC program, runs it and collects all the data
+	 from it, then displays it on screen. You can step trough each instruction and see all the registers,
+	 flags and both stacks content at each instruction. It also dynamicaly updates the memory content display
+	 to show the current memory contents at that step. Use W to go to next instruction, S to go to the previous
+	 one, E to go to the next page in memory (next addresses which can't currently be shown on screen) and D to
+	 go to previous page in memory.
+
+	 --IMPORTANT--
+	 Flags to compile the programs:
+	 Simulated-PC: g++ -o Simulated-PC.exe source/*.cpp -Iinclude
+	 Assembler: g++ -o Assembler.exe Main.cpp
+	 Debugger: g++ -o Debugger.exe source/*.cpp -Iinclude
+
 Changelog 19. Nov 2018.
 	-Fixed a bug in assembler where it would crash if you typed in 0x or 0b only as an argument
 	-Added labels to the assembler

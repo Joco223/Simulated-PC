@@ -1,0 +1,7 @@
+To load a program simply put it in as an argument in the command line (for example: "Debugger.exe SumTwoNumbers.cal")
+
+You can step trough each instruction and see all the registers,
+flags and both stacks content at each instruction. It also dynamicaly updates the memory content display
+to show the current memory contents at that step. Use W to go to next instruction, S to go to the previous
+one, E to go to the next page in memory (next addresses which can't currently be shown on screen) and D to
+go to previous page in memory.

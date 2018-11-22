@@ -38,7 +38,7 @@ namespace Parser{
 		if(hasComment == std::string::npos) {
 			newString = argumentsS;
 		}else{
-			newString = argumentsS.substr(1, hasComment);
+			newString = argumentsS.substr(1, hasComment-1);
 		}
 
 		std::stringstream ss(newString);
