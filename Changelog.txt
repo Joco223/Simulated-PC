@@ -13,6 +13,9 @@ Changelog 22. Nov 2018.
 	 Assembler: g++ -o Assembler.exe Main.cpp
 	 Debugger: g++ -o Debugger.exe source/*.cpp -Iinclude
 
+	 --NEW--
+	 -Fixed Debugger bug where it would display hex number bigger than ff incorrectly
+
 Changelog 19. Nov 2018.
 	-Fixed a bug in assembler where it would crash if you typed in 0x or 0b only as an argument
 	-Added labels to the assembler

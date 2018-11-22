@@ -47,7 +47,7 @@ std::vector<std::string> truthTable {"False", "True"};
 std::string formatCPUData(std::string name, int value, int value2, int size, std::string colour, int instructionMode) {
 	std::string data = name;
 	if(instructionMode == 1){
-		data = data + colour + "0x" + hexTable[value] + "\033[0m";
+		data = data + colour + "0x" + hexTable[value & 0xFF] + hexTable[value >> 8] + "\033[0m";
 		int l1 = data.length() - 4 - colour.length();
 		for(int i = 0; i < size - l1; ++i) {data = data + " ";}
 		data = data + "(" + colour + instructionTable[value2] + "\033[0m" + ")";
@@ -58,7 +58,7 @@ std::string formatCPUData(std::string name, int value, int value2, int size, std
 		int l2 = data.length() - 4 - colour.length();
 		for(int i = 0; i < 35 - l2; ++i) {data = data + " ";}
 	}else{
-		data = data + colour + "0x" + hexTable[value] + "\033[0m";
+		data = data + colour + "0x" + hexTable[value & 0xFF] + hexTable[value >> 8] + "\033[0m";
 		int l1 = data.length() - 4 - colour.length();
 		for(int i = 0; i < size - l1; ++i) {data = data + " ";}
 		data = data + "(" + colour + std::to_string(value2) + "\033[0m" + ")";
@@ -230,7 +230,7 @@ int main(int argc, char** argv) {
 			//Stack
 			if(i < runData[offset].stack.size()) {
 				std::string color1 = "\033[32m";
-				std::string value = color1 + "0x" + hexTable[runData[offset].stack[i]] + "\033[0m";
+				std::string value = color1 + "0x" + hexTable[runData[offset].stack[i] & 0xFF] + hexTable[runData[offset].stack[i] >> 8] + "\033[0m";
 				std::cerr << value;
 				for(int j = 0; j < 7-(value.length() - 9); ++j) {std::cerr << " ";}
 				std::string valueDec = "(" + color1 + std::to_string(runData[offset].stack[i]) + "\033[0m" + ")";
@@ -244,7 +244,7 @@ int main(int argc, char** argv) {
 			//TStack
 			if(i < runData[offset].tempStack.size()) {
 				std::string color1 = "\033[32m";
-				std::string value = color1 + "0x" + hexTable[runData[offset].tempStack[i]] + "\033[0m";
+				std::string value = color1 + "0x" + hexTable[runData[offset].tempStack[i] & 0xFF] + hexTable[runData[offset].tempStack[i] >> 8] + "\033[0m";
 				std::cerr << value;
 				for(int j = 0; j < 7-(value.length() - 9); ++j) {std::cerr << " ";}
 				std::string valueDec = "(" + color1 + std::to_string(runData[offset].tempStack[i]) + "\033[0m" + ")";
