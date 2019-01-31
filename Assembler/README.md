@@ -14,7 +14,10 @@ This is an assembler for the S-PC CPU instruction set.
     - [**The Instruction List**](#the-instruction-list)
 
 # How to use
+Using the SPC Assembler is done on the command line.
+
 `C:>assembler inputFile.txt outputFile`
+
 `$ assembler inputFile.txt outputFile`
 
 # The Instruction Set
@@ -24,7 +27,8 @@ The S-PC CPU Instruction Set, also referred to as the SPC InSet, or InSet, is th
 Comments are written by putting `;` at the start of the comment:
 ```
 ; This is a comment! The assembler ignore this segment of code and keeps going.
-; Note that after a semicolon is detected on a line, no other code is compiled until the start of the next line.
+; Note that after a semicolon is detected on a line, no other code is compiled
+;   until the start of the next line.
 ```
 
 Multi-line comments will be added in the near future.
@@ -60,6 +64,7 @@ jmp myLabel     ; Jumps to <myLabel>, and immediately executes `pusht 10`.
 To load a program into SPC, put the *assembled* filename as the second command-line argument to the program.
 
 `C:>spc outputFile`
+
 `$ spc outputFile`
 
 ### Instruction Syntax
