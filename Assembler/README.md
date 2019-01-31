@@ -16,9 +16,9 @@ This is an assembler for the S-PC CPU instruction set.
 # How to use
 Using the SPC Assembler is done on the command line.
 
-`C:>assembler inputFile.txt outputFile`
+`C:>assembler inputFile.ap outputFile.ac`
 
-`$ assembler inputFile.txt outputFile`
+`$ assembler inputFile.ap outputFile.ac`
 
 # The Instruction Set
 The S-PC CPU Instruction Set, also referred to as the SPC InSet, or InSet, is the list of all instructions, what they do, and how they are used.
@@ -47,6 +47,9 @@ pusht 0xA8C425F ; Uppercase also works!
 pusht 0b0110110
 ```
 
+A `.ap` file is an uncompiled SPC Assembly text file.
+A `.ac` file is a compile SPC binary.
+
 ### Labels
 Labels are defined as such: `label <name>`
 
@@ -63,9 +66,9 @@ jmp myLabel     ; Jumps to <myLabel>, and immediately executes `pusht 10`.
 ### Loading Programs
 To load a program into SPC, put the *assembled* filename as the second command-line argument to the program.
 
-`C:>spc outputFile`
+`C:>spc outputFile.ac`
 
-`$ spc outputFile`
+`$ spc outputFile.ac`
 
 ### Instruction Syntax
 The syntax for Instructions in SPC Assembly is shown below:
